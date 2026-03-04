@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aporia | The Dialectic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: 'Helvetica Neue', sans-serif; background-color: #2d2b3c; color: white; overflow: hidden; }
+        .logic-node { stroke-width: 2px; transition: all 0.5s ease; }
+        .logic-link { stroke: #ffa535; stroke-opacity: 0.3; stroke-width: 1px; }
+        .contradiction-glow { filter: drop-shadow(0 0 10px #e1410a); }
+        #canvas-bg { position: absolute; top: 0; left: 0; z-index: 0; }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <nav class="relative z-10 flex items-center justify-between p-8 bg-[#2d2b3c]/80 backdrop-blur-md border-b border-white/5">
+        <div class="flex flex-col">
+            <span class="text-[#fbd63e] text-2xl font-bold tracking-tighter uppercase">Aporia</span>
+            <span class="text-[9px] tracking-[0.4em] text-gray-500 uppercase">Live Dialectic Mapper</span>
+        </div>
+        <div class="flex gap-4">
+            <button id="mic-toggle" class="border border-[#fbd63e] text-[#fbd63e] px-6 py-2 text-[10px] uppercase tracking-widest hover:bg-[#fbd63e] hover:text-[#2d2b3c] transition-all">
+                Initialize Voice
+            </button>
+        </div>
+    </nav>
+
+    <main class="relative flex-grow flex items-center justify-center">
+        <div id="logic-map" class="w-full h-full"></div>
+        
+        <div id="status-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-center">
+            <div class="w-1 h-12 bg-[#fbd63e] mx-auto mb-4 animate-pulse"></div>
+            <p id="current-state" class="text-[10px] tracking-[0.5em] text-gray-500 uppercase">Awaiting Premise</p>
+        </div>
+    </main>
+
+    <aside id="transcript-panel" class="fixed right-0 top-0 h-full w-80 bg-black/20 backdrop-blur-xl border-l border-white/5 p-8 overflow-y-auto z-20">
+        <h4 class="text-[10px] tracking-[0.3em] text-[#ffa535] uppercase mb-8">Discourse log</h4>
+        <div id="transcript-content" class="text-xs leading-relaxed font-light space-y-6 text-gray-400">
+            </div>
+    </aside>
+
+    <script>
+        // D3.js Graph Configuration
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const nodes = [];
+        const links = [];
+
+        const svg = d3.select("#logic-map").append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(width / 2.5, height / 2));
+
+        function addLogicNode(data) {
+            // data: { id, label, type: 'premise' | 'contradiction', parentId }
+            nodes.push(data);
+            if (data.parentId) {
+                links.push({ source: data.parentId, target: data.id });
+            }
+            render();
+            document.getElementById('current-state').innerText = data.type === 'contradiction' ? "Contradiction Found" : "Logic Extended";
+        }
+
+        function render() {
+            const link = svg.selectAll(".logic-link").data(links).enter()
+                .append("line").attr("class", "logic-link");
+
+            const node = svg.selectAll(".logic-node").data(nodes).enter()
+                .append("circle")
+                .attr("class", d => d.type === 'contradiction' ? "logic-node contradiction-glow" : "logic-node")
+                .attr("r", 6)
+                .attr("fill", d => d.type === 'contradiction' ? "#e1410a" : "#fbd63e")
+                .attr("stroke", "#2d2b3c");
+
+            simulation.nodes(nodes);
+            simulation.force("link").links(links);
+            simulation.alpha(1).restart();
+        }
+
+        // Web Audio / Socket integration logic goes here
+    </script>
+</body>
+</html>
