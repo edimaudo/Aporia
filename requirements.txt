@@ -1,0 +1,13 @@
+# Web & Real-time
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+websockets==13.0
+
+# Google Agentic Stack
+google-genai==1.51.0
+google-adk==1.6.0
+
+# Logic & Graph Processing
+networkx==3.3
+pydantic==2.8.0
+python-dotenv==1.0.1
