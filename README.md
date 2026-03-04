@@ -5,6 +5,7 @@ Most people don't realize their own logical inconsistencies until they see them.
 It is a conversational mirror for your thoughts. It uses Gemini Live API to map out your arguments as you speak, helping you identify contradictions and refine your reasoning through the Socratic method.
 
 ## Project Structure
+```
 APORIA/
 ├── app/
 │   ├── __init__.py
@@ -33,3 +34,4 @@ APORIA/
 ├── .env                     
 ├── requirements.txt
 └── Dockerfile             
+```
