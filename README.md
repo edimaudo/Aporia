@@ -22,8 +22,10 @@ APORIA/
 │   │   └── config.py        
 │   ├── services/            
 │   │   ├── __init__.py
-│   │   ├── philosopher.py   
-│   │   └── cartographer.py  
+│   │   ├── philosopher.py
+│   │   ├── engine.py 
+│   │   └── cartographer.py
+│   │    
 │   ├── schemas/             
 │   │   └── graph.py         
 │   └── static/              
